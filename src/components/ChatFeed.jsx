@@ -2,10 +2,20 @@ import MessageForm from "./MessageForm";
 import MyMessage from "./MyMessage";
 import TheirMessage from "./TheirMessage";
 
+import { deleteChat } from "react-chat-engine";
+
+import { toInt, toString } from "../utilities/date";
+
 const ChatFeed = (props) => {
-  const { chats, activeChat, userName, messages } = props;
+  const ONE_MINUTE = 60 * 1000;
+  const ONE_HOUR = 60 * ONE_MINUTE;
+
+  const { creds, chats, activeChat, userName, messages } = props;
+  const callback = (data) => console.log(data);
 
   const chat = chats && chats[activeChat]; // if chat exists, get the active chat
+
+  const hasMessages = Object.keys(messages).length > 0; // this doesn't seem to work
 
   const renderReadReceipts = (message, isMyMessage) => {
     return chat.people.map(
@@ -65,14 +75,48 @@ const ChatFeed = (props) => {
 
   if (!chat) return "Loading...";
 
+  const lastMessageTime = chat.last_message.created;
+  const lastMessageTimeInt = toInt(lastMessageTime);
+  const lastMessageTimeString = toString(lastMessageTime);
+
+  const date = new Date();
+  // Move back an hour because the backend doesn't recognise the BST change...
+  const now = date.valueOf() - ONE_HOUR;
+
+  const checkTime = async () => {
+    await new Promise((r) => setTimeout(r, 10000));
+    // deleteChat(creds, activeChat, callback);
+    // window.location.reload();
+  };
+
+  if (hasMessages && now - lastMessageTimeInt >= 24 * ONE_HOUR) {
+    checkTime();
+    return (
+      <div className="chat-feed">
+        <div className="chat-title-container">
+          <h1>Congratulations!</h1>
+          <h2>You're a horrible friend</h2>
+          <h3>
+            Why bother adding someone on a messaging app if you're not going to
+            message them?
+          </h3>
+          <br />
+          <h3>This chat will be deleted in 10 seconds.</h3>
+          <br />
+          <br />
+          <h4>You should be ashamed of yourself.</h4>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="chat-feed">
       <div className="chat-title-container">
-        {/* Kotlin non-null syntax - OH BABY! */}
+        {/* Kotlin-like non-null syntax - OH BABY! */}
         <div className="chat-title">{chat?.title}</div>
-        <div className="chat-subtitle">
-          {chat.people.map((person) => ` ${person.person.username}`)}
-        </div>
+        <div className="chat-subtitle">{lastMessageTimeString}</div>
+        <div className="chat-subtitle">{(now - lastMessageTimeInt) / 1000}</div>
       </div>
       {renderMessages()}
       <div style={{ height: "100px" }} />
