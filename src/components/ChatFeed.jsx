@@ -4,10 +4,13 @@ import TheirMessage from "./TheirMessage";
 
 import { deleteChat } from "react-chat-engine";
 
+import Confetti from "react-confetti";
+
 import { toInt, toString } from "../utilities/date";
 
 const ChatFeed = (props) => {
-  const ONE_MINUTE = 60 * 1000;
+  const ONE_SECOND = 1000;
+  const ONE_MINUTE = 60 * ONE_SECOND;
   const ONE_HOUR = 60 * ONE_MINUTE;
 
   const { creds, chats, activeChat, userName, messages } = props;
@@ -83,17 +86,21 @@ const ChatFeed = (props) => {
   // Move back an hour because the backend doesn't recognise the BST change...
   const now = date.valueOf() - ONE_HOUR;
 
-  const checkTime = async () => {
-    await new Promise((r) => setTimeout(r, 10000));
-    // deleteChat(creds, activeChat, callback);
-    // window.location.reload();
+  const deleteContact = async () => {
+    await new Promise((r) => setTimeout(r, 10 * ONE_SECOND));
+    deleteChat(creds, activeChat, callback);
+    window.location.reload();
   };
 
-  if (hasMessages && now - lastMessageTimeInt >= 24 * ONE_HOUR) {
-    checkTime();
+  // const shouldDelete = now - lastMessageTimeInt >= 24 * ONE_HOUR;
+  const shouldDelete = false;
+
+  if (hasMessages && shouldDelete) {
+    deleteContact();
     return (
       <div className="chat-feed">
-        <div className="chat-title-container">
+        <Confetti width="650px" height="800px" />
+        <div className="friend-deletion">
           <h1>Congratulations!</h1>
           <h2>You're a horrible friend</h2>
           <h3>
@@ -115,8 +122,7 @@ const ChatFeed = (props) => {
       <div className="chat-title-container">
         {/* Kotlin-like non-null syntax - OH BABY! */}
         <div className="chat-title">{chat?.title}</div>
-        <div className="chat-subtitle">{lastMessageTimeString}</div>
-        <div className="chat-subtitle">{(now - lastMessageTimeInt) / 1000}</div>
+        <div className="chat-subtitle">{`Last messaged: ${lastMessageTimeString}`}</div>
       </div>
       {renderMessages()}
       <div style={{ height: "100px" }} />
