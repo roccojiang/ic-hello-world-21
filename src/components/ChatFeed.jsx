@@ -22,11 +22,11 @@ const ChatFeed = (props) => {
                         {
                             // Ternary operator!!
                             isMyMessage
-                            ? <MyMessage /> // display MyMessage return value
-                            : <TheirMessage />
+                            ? <MyMessage message={message} /> // display MyMessage return value
+                            : <TheirMessage message={message} lastMessage={messages[lastMessageKey]}/>
                         }
                     </div>
-                    <div className="read-receipts" style={{ marginRight: isMyMessage ? '18px' : '0px', marginLeft: isMyMessage ? '0px' : '68px' }}>
+                    <div className="read-receipts" style={{ marginRight: isMyMessage ? '18px' : '0px', marginLeft: isMyMessage ? '0px' : '76px' }}>
                         read-receipts
                     </div>
                 </div>
