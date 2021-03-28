@@ -26,7 +26,7 @@ const MessageForm = (props) => {
   const handleChange = (event) => {
     setValue(event.target.value); // where value of input is stored
 
-    isTyping(props, chatId);
+    isTyping(props, chatId); 
   };
 
   const handleUpload = (event) => {

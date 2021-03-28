@@ -13,7 +13,7 @@ const LoginForm = () => {
     const authObject = {
       "Project-ID": "44c4f1ff-6048-4e0e-ad28-16790737836c",
       "User-Name": username,
-      "User-Secret": password,
+      "User-Secret": password, 
     };
 
     try {

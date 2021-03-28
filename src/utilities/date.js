@@ -27,7 +27,7 @@ export function toInt(date) {
   const month = date.substr(5, 2);
   const year = date.substr(0, 4);
 
-  const hour = date.substr(11, 2);
+  const hour = date.substr(11, 2); 
   const minute = date.substr(14, 2);
   const second = date.substr(17, 2);
 
